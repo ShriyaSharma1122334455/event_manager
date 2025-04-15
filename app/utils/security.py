@@ -3,6 +3,7 @@ from builtins import Exception, ValueError, bool, int, str
 import secrets
 import bcrypt
 from logging import getLogger
+import re
 
 # Set up logging
 logger = getLogger(__name__)
@@ -51,3 +52,15 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def generate_verification_token():
     return secrets.token_urlsafe(16)  # Generates a secure 16-byte URL-safe token
+def validate_password(cls, v):
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters long.")
+        if not re.search(r"[A-Z]", v):
+            raise ValueError("Password must include at least one uppercase letter.")
+        if not re.search(r"[a-z]", v):
+            raise ValueError("Password must include at least one lowercase letter.")
+        if not re.search(r"[0-9]", v):
+            raise ValueError("Password must include at least one number.")
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", v):
+            raise ValueError("Password must include at least one special character.")
+        return v

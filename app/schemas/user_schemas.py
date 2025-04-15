@@ -5,9 +5,8 @@ from datetime import datetime
 from enum import Enum
 from builtins import ValueError, any, bool, str
 from pydantic import BaseModel, EmailStr, Field, validator, root_validator
-
 from app.utils.nickname_gen import generate_nickname
-
+from app.utils.security import validate_password
 # User roles
 class UserRole(str, Enum):
     ANONYMOUS = "ANONYMOUS"
@@ -58,6 +57,12 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = Field(..., example="Secure*1234")
+    @validator("password", pre=True, always=True)
+    def validate_password_field(cls, value):
+         if value:
+             validate_password(value)  # Raises a ValueError if invalid
+         return value
+
 
 class UserUpdate(UserBase):
     email: Optional[EmailStr] = Field(None, example="john.doe@example.com")
