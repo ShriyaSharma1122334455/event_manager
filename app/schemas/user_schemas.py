@@ -54,6 +54,16 @@ class UserBase(BaseModel):
 
     class Config:
         from_attributes = True
+class UpdateProfilePictureRequest(BaseModel):
+    profile_picture_url: str = Field(..., example="https://example.com/profile.jpg")
+
+    @validator("profile_picture_url")
+    def validate_profile_picture_url(cls, value):
+        return validate_url(value)
+
+
+class UpdateBioRequest(BaseModel):
+    bio: str = Field(..., max_length=500, example="Passionate software developer with 5 years of experience.")
 
 class UserCreate(UserBase):
     password: str = Field(..., example="Secure*1234")
