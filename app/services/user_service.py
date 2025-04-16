@@ -67,7 +67,7 @@ class UserService:
                  return None
             validated_data['hashed_password'] = hash_password(password)
 
-            #prepare user data
+            #prepare 
             new_user = User(**validated_data)
 
             new_user.verification_token = generate_verification_token()
@@ -128,9 +128,10 @@ class UserService:
     
 
     @classmethod
-    async def login_user(cls, session: AsyncSession, email: str, password: str) -> Optional[User]:
-        user = await cls.get_by_email(session, email)
+    async def login_user(cls, session: AsyncSession, nickname: str, password: str) -> Optional[User]:
+        user = await cls.get_by_nickname(session, nickname=nickname)
         if user:
+            logger.info(f"User Found: {user.nickname}")
             if user.email_verified is False:
                 return None
             if user.is_locked:
