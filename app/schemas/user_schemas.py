@@ -64,7 +64,21 @@ class UserCreate(UserBase):
     password: str = Field(..., example="Secure*1234")
 
     _validate_password = validator('password', allow_reuse=True)(validate_password)
+class UpdateBioRequest(BaseModel):
+    bio: str = Field(
+        ...,
+        max_length=500,
+        description="The new bio for the user (max length: 500 characters).",
+        example="Intern software developer with a bachelor's degree in Computer Science."
+    )
 
+class UpdateProfilePictureRequest(BaseModel):
+    profile_picture_url: HttpUrl = Field(
+        ...,
+        description="The new profile picture URL.",
+        example="https://example.com/profiles/john_new.jpg"
+    )
+    
 class UserUpdate(UserBase):
     email: Optional[EmailStr] = Field(None, example="john.doe@example.com")
     nickname: Optional[str] = Field(
