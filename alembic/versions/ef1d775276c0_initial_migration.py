@@ -9,7 +9,12 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from app.dependencies import get_settings
+from app.utils.security import hash_password    
+from sqlalchemy.sql import text
+import uuid
 
+setting = get_settings()
 
 # revision identifiers, used by Alembic.
 revision: str = 'ef1d775276c0'
@@ -45,6 +50,8 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
     op.create_index(op.f('ix_users_nickname'), 'users', ['nickname'], unique=True)
+
+    
     # ### end Alembic commands ###
 
 
