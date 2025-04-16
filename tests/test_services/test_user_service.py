@@ -20,7 +20,6 @@ async def test_create_user_with_valid_data(db_session, email_service):
 # Test creating a user with invalid data
 async def test_create_user_with_invalid_data(db_session, email_service):
     user_data = {
-        "nickname": "",  # Invalid nickname
         "email": "invalidemail",  # Invalid email
         "password": "short",  # Invalid password
     }
@@ -112,10 +111,13 @@ async def test_register_user_with_invalid_data(db_session, email_service):
 async def test_login_user_successful(db_session, verified_user):
     user_data = {
         "email": verified_user.email,
-        "password": "MySuperPassword$1234",
+        "password": "MySuperPassword$1234",  # Must match raw password in fixture
     }
-    logged_in_user = await UserService.login_user(db_session, user_data["email"], user_data["password"])
+    logged_in_user = await UserService.login_user(
+        db_session, user_data["email"], user_data["password"]
+    )
     assert logged_in_user is not None
+    assert logged_in_user.email == verified_user.email
 
 # Test user login with incorrect email
 async def test_login_user_incorrect_email(db_session):
